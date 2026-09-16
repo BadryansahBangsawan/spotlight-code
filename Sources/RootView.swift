@@ -16,7 +16,7 @@ struct RootView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: FunTheme.sectionSpacing) {
             if let loadError = store.loadError {
                 Label(loadError, systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.red)
@@ -28,42 +28,50 @@ struct RootView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            HStack {
-                Button(store.isIndexing ? "Indexing…" : "Index now") {
-                    store.indexNow()
+            VStack(alignment: .leading, spacing: FunTheme.innerSpacing) {
+                HStack {
+                    Button(store.isIndexing ? "Indexing…" : "Index now") {
+                        store.indexNow()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(store.isIndexing || store.roots.isEmpty)
+                    if store.isIndexing {
+                        ProgressView()
+                            .controlSize(.small)
+                    }
                 }
-                .disabled(store.isIndexing || store.roots.isEmpty)
-                if store.isIndexing {
-                    ProgressView()
-                        .controlSize(.small)
-                }
-                Spacer()
+
+                Text(statusText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
-            Text(statusText)
-                .font(.system(.caption))
-                .foregroundStyle(.secondary)
-
-            TextField("Search", text: $store.query)
-                .textFieldStyle(.roundedBorder)
+            ExtraSearchField(title: "Search", prompt: "filename or symbol", text: $store.query)
 
             if store.roots.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Add a folder that contains source files.")
-                    Button("Add folder") { store.addRoot() }
-                }
+                ExtraEmptyState(
+                    title: "No folders",
+                    detail: "Add a folder that contains source files.",
+                    actionTitle: "Add folder",
+                    action: { store.addRoot() }
+                )
             } else if store.dump.fileCount == 0 && !store.isIndexing && store.query.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Index a folder to search source files.")
-                    Button("Index now") { store.indexNow() }
-                        .disabled(store.isIndexing)
-                }
+                ExtraEmptyState(
+                    title: "Not indexed yet",
+                    detail: "Index a folder to search source files.",
+                    actionTitle: "Index now",
+                    action: { store.indexNow() }
+                )
             } else if !store.query.isEmpty && store.results.isEmpty {
-                Text("No matches.")
-                    .foregroundStyle(.secondary)
+                ExtraEmptyState(
+                    title: "No results",
+                    detail: "No results for “\(store.query)”.",
+                    actionTitle: "Clear search",
+                    action: { store.query = "" }
+                )
             } else if !store.query.isEmpty {
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 6) {
+                    LazyVStack(alignment: .leading, spacing: FunTheme.innerSpacing) {
                         ForEach(store.results.prefix(80)) { hit in
                             Button {
                                 CodeOpener.open(path: hit.path, line: hit.line)
@@ -80,28 +88,25 @@ struct RootView: View {
                                         .foregroundStyle(.secondary)
                                         .lineLimit(2)
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .extraRowSurface()
                             }
                             .buttonStyle(.plain)
                         }
                     }
                 }
-                .frame(maxHeight: 220)
+                .frame(maxHeight: 280)
             }
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Open Spotlight")
-                    .font(.system(.subheadline, weight: .medium))
-                Text("Cmd-Space and type the filename")
-                    .font(.system(.caption))
-                    .foregroundStyle(.secondary)
-            }
+            Text("After indexing, filenames also appear in Spotlight.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ExtraSettingsFooter()
         }
-        .funPanel()
-        .background(.regularMaterial)
         .animation(reduceMotion ? nil : FunTheme.spring, value: store.isIndexing)
         .animation(reduceMotion ? nil : FunTheme.spring, value: store.dump.fileCount)
         .animation(reduceMotion ? nil : FunTheme.spring, value: store.query)
+        .funPanel()
         .onAppear { store.load() }
     }
 }
