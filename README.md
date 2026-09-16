@@ -1,40 +1,56 @@
+<div align="center">
+
 # Spotlight Code
 
-Index local source folders and search them from the menu bar, with optional Spotlight donations.
+**Spotlight-style fuzzy search over local source files.**  
+macOS menu extra — lives in the menu bar, no Dock icon.
 
-Menu extra for macOS 14+. It lives in the menu bar and does not show a Dock icon.
+<br/>
 
-## Features
+[![Latest Release](https://img.shields.io/github/v/release/BadryansahBangsawan/spotlight-code?style=flat-square&color=76B900&label=latest)](https://github.com/BadryansahBangsawan/spotlight-code/releases/latest)
+[![macOS](https://img.shields.io/badge/macOS-14%2B-black?style=flat-square&logo=apple)](https://github.com/BadryansahBangsawan/spotlight-code/releases/latest)
+[![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?style=flat-square&logo=swift&logoColor=white)](https://swift.org)
 
-- Add one or more roots; **Index now** builds `index.json`.
-- Search by filename and content; open the hit in your editor.
-- Hard cap of 5000 files (`Index capped at 5000 files` is success, not a crash).
-- Skips `node_modules`, `.git`, `.build`, `DerivedData`, `dist`, `.next`, `Pods`.
-- Exclude globs (defaults `*.generated.swift`, `*.min.js`).
-- Core Spotlight: after indexing, Cmd-Space can find filenames.
-- App Intent `SearchCodeIntent` for system search.
+<br/>
 
-## Requirements
+</div>
 
-- macOS 14 Sonoma or later
-- Swift 5.9 or later
+---
 
-## Install
+## Download
 
-Homebrew (macOS 14+):
+| Platform | File |
+|---|---|
+| **macOS** (Apple Silicon & Intel, macOS 14+) | `SpotlightCode-*-macos.zip` |
+
+[Go to Releases](https://github.com/BadryansahBangsawan/spotlight-code/releases/latest)
+
+---
+
+## Installation
+
+### Homebrew (recommended)
 
 ```bash
 brew tap BadryansahBangsawan/mac-menu-apps
 brew install --cask spotlight-code
 ```
 
-Opens as a menu extra (no Dock icon). The cask is ad-hoc signed. If Gatekeeper blocks it:
+A **Spotlight Code** icon appears in the menu bar. If Gatekeeper blocks it on first launch:
 
 ```bash
-xattr -cr /Applications/SpotlightCode.app
+xattr -cr /Applications/SpotlightCode.app && open /Applications/SpotlightCode.app
 ```
 
-Build from source:
+Or: right-click the app, Open, then Open again. Still blocked? **System Settings → Privacy & Security → Open Anyway**.
+
+### GitHub Releases
+
+1. Download `SpotlightCode-*-macos.zip` from [Releases](https://github.com/BadryansahBangsawan/spotlight-code/releases/latest)
+2. Unzip and drag **SpotlightCode** into Applications
+3. On first launch, run the xattr command above if Gatekeeper blocks it
+
+### Build from source
 
 ```bash
 git clone https://github.com/BadryansahBangsawan/spotlight-code.git
@@ -43,35 +59,26 @@ bash package-app.sh
 open dist/SpotlightCode.app
 ```
 
-Enable **Open at Login** from Settings if you want it after reboot.
+Requires Xcode Command Line Tools and Swift 5.9+.
 
-## Usage
+## Keyboard Shortcuts
 
-- Add a folder of source, then **Index now**.
-- Type in Search. Click a hit to open it.
-- If Core Spotlight fails, the panel shows that error and still keeps `index.json`.
+| Shortcut | Action |
+|---|---|
+| `Control+Shift+F` | Open search panel |
 
-## Permissions
+---
 
-- Folder access via the open panel. Spotlight donation uses Core Spotlight on this Mac.
+## Notes
 
-Denied permissions must not crash the app. You should see a banner and a button to open System Settings.
+– Add folders to watch in Settings; FSEvents keeps the index live.
+– Opens results in the default editor for each file type.
+– No Dock icon; lives entirely in the menu bar.
 
-## Privacy
+---
 
-No source is uploaded. Index lives in `~/Library/Application Support/Spotlight Code/index.json`.
+<div align="center">
 
-Bundle ID: `engineer.badry.spotlightcode`.
+Made with ♥ for developers who prefer staying in the flow.
 
-## Development
-
-```bash
-swift build
-swift build -c release --product SpotlightCode
-```
-
-Layout: `Sources/` (SwiftPM executable), `Info.plist`, `Assets/AppIcon.icns`, `package-app.sh`.
-
-## License
-
-[MIT](LICENSE)
+</div>
