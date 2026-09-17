@@ -75,6 +75,14 @@ Requires Xcode Command Line Tools and Swift 5.9+.
 – Opens results in the default editor for each file type.
 – No Dock icon; lives entirely in the menu bar.
 
+## Troubleshooting
+
+**Search results stop updating after a system restart**
+Spotlight Code registers FSEvents watchers at launch. If a watched folder lives on an external drive that mounts after the app starts, FSEvents won't track it until you re-add the folder in Settings or restart the app after the drive mounts.
+
+**Results open in the wrong editor**
+The app respects macOS default-app associations per file type. Change the default in Finder: right-click any file of that type → Get Info → Open With → Change All.
+
 ---
 
 <div align="center">
