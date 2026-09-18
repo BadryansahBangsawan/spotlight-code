@@ -74,6 +74,7 @@ Requires Xcode Command Line Tools and Swift 5.9+.
 – Add folders to watch in Settings; FSEvents keeps the index live.
 – Opens results in the default editor for each file type.
 – No Dock icon; lives entirely in the menu bar.
+– Large `node_modules` / `.git` trees can be excluded in Settings to keep the index lean on monorepos.
 
 ## Troubleshooting
 
